@@ -13,11 +13,31 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $image = fake()->image;
-            Product::create([
-                'name' => 'Computer',
-                'quantity' => '15',
-                'image' => $image,
+        $image = fake()->imageUrl;
+        Product::create([
+            'name' => 'Computer',
+            'quantity' => '15',
+            'image' => $image,
+        ]);
+        Product::create([
+            'name' => 'TV',
+            'quantity' => '10',
+            'image' => $image,
+        ]);
+        Product::create([
+            'name' => 'Mobile',
+            'quantity' => '20',
+            'image' => $image,
+        ]);
+        Product::create([
+            'name' => 'Chair',
+            'quantity' => '30',
+            'image' => $image,
+        ]);
+        Product::create([
+            'name' => 'Laptop',
+            'quantity' => '5',
+            'image' => $image,
         ]);
     }
 }

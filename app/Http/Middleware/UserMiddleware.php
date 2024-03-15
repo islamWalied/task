@@ -29,6 +29,5 @@ class UserMiddleware
         else {
             abort(403);
         }
-        return $next($request);
     }
 }
