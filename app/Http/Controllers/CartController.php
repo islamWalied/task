@@ -16,7 +16,8 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $cart = Cart::where('user_id',Auth::user()->id)->get();
+        return CartResource::collection($cart);
     }
 
     /**
@@ -36,13 +37,22 @@ class CartController extends Controller
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
-
-        $cart = Cart::create([
-            'user_id' => Auth::user()->id,
-            'product_id' => $product_id->id,
-            'quantity' => $request->quantity,
-        ]);
-        return new CartResource($cart);
+        $cart_id = Cart::where('product_id',$id)->first();
+        if ($cart_id)
+        {
+            if ($request->quantity > $product_id->quantity){
+                return new JsonResponse(['message'=>"you can not add more than the product quantity"]);
+            }
+            $cart_id->update(['quantity' => $request->quantity]);
+        }
+        else {
+            $cart_id = Cart::create([
+                'user_id' => Auth::user()->id,
+                'product_id' => $product_id->id,
+                'quantity' => $request->quantity,
+            ]);
+        }
+        return new CartResource($cart_id);
     }
 
     /**
@@ -74,12 +84,34 @@ class CartController extends Controller
      */
     public function destroy(string $id)
     {
-        $product = Product::find($id);
+        $product = Cart::where('product_id',$id)->first();
         if (!$product)
         {
             return new JsonResponse(['message'=>"this product isn't available in the cart"]);
         }
         $product->delete();
         return new JsonResponse(['message'=>'the item deleted successfully']);
+    }
+    public function increment($id)
+    {
+        $product_id = Product::findOrFail($id);
+        $cartItem = Cart::where('product_id',$id)->first();
+        if($cartItem->quantity < $product_id->quantity)
+        {
+            $cartItem->increment('quantity');
+        }
+        else {
+            return new JsonResponse(['message' => "you can not add more than the product quantity"]);
+        }
+        return $cartItem;
+    }
+
+    public function decrement($id)
+    {
+        $cartItem = Cart::where('product_id',$id)->first();
+        if ($cartItem->quantity > 1) {
+            $cartItem->decrement('quantity');
+        }
+        return $cartItem;
     }
 }
