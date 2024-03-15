@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware('auth:sanctum')->group(function (){
+Route::middleware(['auth.type:user','auth:sanctum'])->group(function (){
     Route::post('/carts/{id}',[\App\Http\Controllers\CartController::class,'store']);
     Route::delete('/carts/{id}',[\App\Http\Controllers\CartController::class,'destroy']);
     Route::get('/carts',[\App\Http\Controllers\CartController::class,'index']);
