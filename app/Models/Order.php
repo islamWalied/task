@@ -19,4 +19,8 @@ class Order extends Model
         'billing_address',
         'shipping_method',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

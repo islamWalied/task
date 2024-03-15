@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Models\Notification;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use function Sodium\compare;
 
 class OrderController extends Controller
 {
@@ -15,8 +17,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::query()->get();
-        return OrderResource::collection($orders);
+        $orders = Order::all();
+        $notify = Notification::all();
+        return view('admin.orders.index',compact('orders','notify')) ;
     }
 
     /**
@@ -50,6 +53,17 @@ class OrderController extends Controller
             'billing_address' => $request->billing_address,
             'shipping_method' => $request->shipping_method,
             'payment_method' => $request->payment_method,
+        ]);
+        event(new \App\Events\OrderEvent($order->user->name));
+
+        $date = [
+            'order_number' => $order->order_number,
+            'total_price' => $request->total_price,
+        ];
+        $notify = Notification::create([
+            'type' => 'order.created',
+            'data' => json_encode($date),
+            'user_id' => $order->user_id,
         ]);
 
         return new OrderResource($order);
