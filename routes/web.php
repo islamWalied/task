@@ -18,9 +18,11 @@ Route::get('/', function () {
     return view('login');
 })->name('/');
 
-Route::post('/',[\App\Http\Controllers\AuthController::class,'login_admin'])->name('login');
+Route::post('/login',[\App\Http\Controllers\AuthController::class,'login_admin'])->name('login');
 
-Route::middleware(['auth:sanctum','auth.type:admin'])->group(function(){
-    Route::get('admin',[\App\Http\Controllers\AdminController::class,'index']);
-    Route::get('orders',[\App\Http\Controllers\OrderController::class,'index'])->name('orders');
+Route::get('/logout',[\App\Http\Controllers\AuthController::class,'logout_admin'])->name('logout_admin');
+
+Route::middleware(['auth.type:admin'])->group(function(){
+    Route::get('/admin',[\App\Http\Controllers\AdminController::class,'index'])->name('admin');
+    Route::get('/orders',[\App\Http\Controllers\OrderController::class,'index'])->name('orders');
 });

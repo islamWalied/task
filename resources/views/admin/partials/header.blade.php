@@ -40,7 +40,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{route('logout')}}" class="nav-link">
+                <a href="{{route('logout_admin')}}" class="nav-link">
                     <i class="nav-icon far fa-user"></i>
                     <p>
                         Logout

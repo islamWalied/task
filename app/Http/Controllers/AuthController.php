@@ -116,9 +116,16 @@ class AuthController extends Controller
     }
     public function login_admin(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect('admin');
-        } else
-            return redirect()->back()->with('danger', 'Please Enter Correct Email and Password');
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+        {
+            return redirect()->route('admin');
+        }
+        else
+            return redirect()->back()->with('danger','Please Enter Correct Email and Password');
+    }
+    public function logout_admin()
+    {
+        Auth::logout();
+        return redirect()->route('/');
     }
 }
